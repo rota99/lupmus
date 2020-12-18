@@ -16,45 +16,35 @@ client.on("message", function(message) {
   const args = commandBody.split(' ');
   const command = args.shift().toLowerCase();
 
-    const channel = message.channel
-    const members = channel.members
+  const channel = message.channel;
+  const members = channel.members;
 
-      const fasi = message.content.slice(prefix.length).split(' ').shift().toLowerCase();
-        switch (fasi) {
+  const fasi = message.content.slice(prefix.length).split(' ').shift().toLowerCase();
 
-          case "clear":
+  switch (fasi) {
 
-            dataservice.clear(message, args)
+    case "clear":
+      dataservice.clear(message, args);
+      break;
 
-            break;
+    case "notte":
+      dataservice.mute(members, message);
+      break;
 
-          case "notte":
+    case "accuse":
+      dataservice.unmute(members, message);
+      dataservice.timerAccuse(message);
+      break;
 
-            dataservice.mute(members, message)
+    case "rogo":
+      message.channel.send('demoghe fogooo');
+      break;
 
-            break;
-
-          case "accuse":
-
-            dataservice.unmute(members, message)
-            dataservice.timeraccuse(message)
-
-            break;
-
-          case "rogo":
-
-            message.channel.send('demoghe fogooo');
-
-            break;
-
-          default:
-
-          message.channel.send('svejate fora');
-
-          break;
-
-          }
+    default:
+      message.channel.send('svejate fora');
+      break;
+  }
 });
 
 
-client.login("Nzg4NDk1MDI0MjQwNDU5ODA2.X9kVNw.MRytYUYLSzdzavannXfkllHSEFw")
+client.login("Nzg4NDk1MDI0MjQwNDU5ODA2.X9kVNw.MRytYUYLSzdzavannXfkllHSEFw");
