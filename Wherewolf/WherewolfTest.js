@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const config = require("./config.json");
 const client = new Discord.Client();
 const dataservice = require("./function.js")
 const prefix = ".";
@@ -57,4 +58,4 @@ client.on("message", function(message) {
 });
 
 
-client.login("Nzg4NDk1MDI0MjQwNDU5ODA2.X9kVNw.pge3_g0E8G5Ir1BqNoGpoXWlkZI")
+client.login(config.BOT_TOKEN);
