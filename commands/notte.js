@@ -9,7 +9,7 @@ const mute = (members) => {
 };
 
 module.exports = {
-  name: 'notte',
+  name: 'n',
   description: 'Comando per avviare la fase del gioco notte.',
 
   execute(members, message, args) {

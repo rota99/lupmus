@@ -1,8 +1,8 @@
-module.exports => {
-  name: 'clear',
+module.exports = {
+  name: 'c',
   description: 'Comando per cancellare un certo numero di messaggi.',
 
-  execute(message, args) {
+  execute(message, args, command) {
     const amount = args.join(' '); // Amount of messages which should be deleted
 
     if (!amount) return message.channel.send('Ok bro, ma quanti ne cancello?'); // Checks if the `amount` parameter is given
@@ -12,7 +12,7 @@ module.exports => {
     if (amount < 1) return message.channel.send('Devo cancellarne almeno 1 però...'); // Checks if the `amount` integer is smaller than 1
 
 
-    if(command ==="clear") {
+    if(command ==="c") {
       message.channel.messages.fetch({ limit: amount }).then(messages => { // Fetches the messages
         setTimeout(() => {  message.channel.bulkDelete(messages); }, 2000);
       });

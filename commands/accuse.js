@@ -1,4 +1,5 @@
 const idNarratore = "774699081620521000";
+let intervallo = null;
 
 const unmute = (members) => {
   members.forEach(member => {
@@ -9,10 +10,9 @@ const unmute = (members) => {
 };
 
 const timer = (message) => {
-  var intervallo = null;
   var c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
 
-  if (isNaN(c)) return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
+  if (isNaN(c) && c != 's') return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
 
   message.channel.send(`La discussione durerà ${c} minuti`)
   message.channel.send(`${c} minuti rimanenti`)
@@ -29,7 +29,7 @@ const timer = (message) => {
       c--;
     }
     else {
-      message.channel.messages.fetch({ limit: 1 }).then(messages => {
+      message.channel.messages.fetch({ limit: 2 }).then(messages => {
         message.channel.bulkDelete(messages);
       });
 
@@ -39,16 +39,27 @@ const timer = (message) => {
     }
   };
 
-  intervallo = setInterval(minuti, 5000);
+  intervallo = setInterval(minuti, 60000);
 };
 
+const skip = () => {
+  clearInterval(intervallo);
+  return;
+}
+
 module.exports = {
-  name: 'accuse',
+  name: 'a',
   description: 'Comando per avviare la fase del gioco giorno, in particolare le accuse.',
 
   execute(members, message, args) {
-    message.channel.send('Buongiorno scimmiette, è ora di discutere');
-    unmute(members);
-    timer(message);
+    if(args[0] == 's') {
+      skip();
+      message.channel.send('ok fra ma non agitarti per favorp');
+    }
+    else {
+      message.channel.send('Buongiorno scimmiette, è ora di discutere');
+      unmute(members);
+      timer(message);
+    }
   }
 }

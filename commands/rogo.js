@@ -1,9 +1,9 @@
-const timer = (message) => {
-  var c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
+let intervallo = null;
+var c = null;
 
+const timer = (message) => {
   if (isNaN(c)) return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
 
-  message.channel.send(`Al rogo andranno ${c} persone, avete un minuto a testa`)
   message.channel.send(`Avanti il ${c}°`)
   c--;
   var minuti = function(){
@@ -19,18 +19,20 @@ const timer = (message) => {
       message.channel.bulkDelete(messages);
       });
       message.channel.send("È ora di scoprire se sono stati rogati dei dudi");
-      clearInterval(this.intervallo);
+      clearInterval(intervallo);
     }
   };
-  this.intervallo = setInterval(minuti, 5000);
+  intervallo = setInterval(minuti, 60000);
 };
 
 module.exports = {
-  name: 'rogo',
+  name: 'r',
   description: 'Comando per avviare la fase delle difese e il voto.',
 
   execute(message, args) {
-    message.channel.send('demoghe fogooo');
+    clearInterval(intervallo);
+    c = parseInt(message.content.substr(message.content.indexOf(' ')+1, message.content.lenght));
+    message.channel.send(`Devono difendersi ancora ${c} persone, avete un minuto a testa`)
     timer(message);
   }
 }

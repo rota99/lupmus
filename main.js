@@ -31,27 +31,33 @@ client.on("message", message => {
 
   switch (command) {
 
-    case "clear":
+    case "c":
 
-      client.commands.get('clear').execute(message, args);
-
-      break;
-
-    case "notte":
-
-      client.commands.get('notte').execute(members, message, args);
+      client.commands.get('c').execute(message, args, command);
 
       break;
 
-    case "accuse":
+    case "n":
 
-      client.commands.get('accuse').execute(members, message, args);
+      client.commands.get('n').execute(members, message, args);
 
       break;
 
-    case "rogo":
+    case "a":
 
-      client.commands.get('accuse').execute(message, args);
+      client.commands.get('a').execute(members, message, args);
+
+      break;
+
+    case "r":
+
+      client.commands.get('r').execute(message, args);
+
+      break;
+
+    case "v":
+
+      client.commands.get('v').execute(members, message, args)
 
       break;
 
