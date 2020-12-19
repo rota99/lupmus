@@ -1,5 +1,23 @@
 module.exports = {
 
+  intervallo: null,
+
+
+  skipAccuse:function(message) {
+
+    message.channel.send("Ok ma non agitarti per favorp")
+    message.channel.send("Accuse concluse, è ora di ballottaggio")
+    clearInterval(this.intervallo);
+
+  },
+
+  skipRogo:function(message) {
+
+
+},
+
+
+
   clear: function(message, args) {
     const amount = args.join(' '); // Amount of messages which should be deleted
 
@@ -36,32 +54,59 @@ module.exports = {
   },
 
   timerAccuse: function(message) {
-    var intervallo = null;
+    var c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
 
-    var c = message.content.substr(message.content.indexOf(' ') + 1, message.content.lenght);
-    message.channel.send(`La discussione durerà ${c} minuti`);
-    message.channel.send(`${c} minuti rimanenti`);
+    if (isNaN(c)) return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
+
+    message.channel.send(`La discussione durerà ${c} minuti`)
+    message.channel.send(`${c} minuti rimanenti`)
     c--;
-
-    var minuti = minutiCountdown(message, c, intervallo);
-
-    intervallo = setInterval(minuti, 60000);
+    var minuti = function(){
+      if(c > 0) {
+        message.channel.send(`${c} minuti rimanenti`)
+          message.channel.messages.fetch({ limit: 1 }).then(messages => {
+          message.channel.bulkDelete(messages);
+          });
+        c--;
+      }
+      else {
+        message.channel.messages.fetch({ limit: 1 }).then(messages => {
+        message.channel.bulkDelete(messages);
+        });
+        message.channel.send("Tempo di scegliere chi andrà al rogo")
+        clearInterval(this.intervallo);
+      }
+    };
+    this.intervallo = setInterval(minuti, 5000);
   },
 
-  minutiCountdown: function(message, c, intervallo) {
+  timerRogo: function(message) {
+
+  message.channel.send('demoghe fogooo');
+  var c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
+
+  if (isNaN(c)) return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
+
+  message.channel.send(`Al rogo andranno ${c} persone, avete un minuto a testa`)
+  message.channel.send(`Avanti il ${c}°`)
+  c--;
+  var minuti = function(){
     if(c > 0) {
-      message.channel.send(`${c} minuti rimanenti`)
+      message.channel.send(`Avanti il ${c}°`)
         message.channel.messages.fetch({ limit: 1 }).then(messages => {
         message.channel.bulkDelete(messages);
         });
       c--;
     }
     else {
-      message.channel.messages.fetch({ limit: 1 }).then(messages => {
+      message.channel.messages.fetch({ limit: 2 }).then(messages => {
       message.channel.bulkDelete(messages);
       });
-      message.channel.send("Tempo di scegliere chi andrà al rogo")
-      clearInterval(intervallo);
+      message.channel.send("È ora di scoprire se sono stati rogati dei dudi");
+      clearInterval(this.intervallo);
     }
-  }
+  };
+  this.intervallo = setInterval(minuti, 5000);
+},
+
 }

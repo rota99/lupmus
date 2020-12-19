@@ -17,34 +17,44 @@ client.on("message", function(message) {
   const args = commandBody.split(' ');
   const command = args.shift().toLowerCase();
 
-  const channel = message.channel;
-  const members = channel.members;
+    const channel = message.channel
+    const members = channel.members
 
-  const fasi = message.content.slice(prefix.length).split(' ').shift().toLowerCase();
+      const fasi = message.content.slice(prefix.length).split(' ').shift().toLowerCase();
+        switch (fasi) {
 
-  switch (fasi) {
+          case "clear":
 
-    case "clear":
-      dataservice.clear(message, args);
-      break;
+            dataservice.clear(message, args)
 
-    case "notte":
-      dataservice.mute(members, message);
-      break;
+            break;
 
-    case "accuse":
-      dataservice.unmute(members, message);
-      dataservice.timerAccuse(message);
-      break;
+          case "notte":
 
-    case "rogo":
-      message.channel.send('demoghe fogooo');
-      break;
+            dataservice.mute(members, message)
 
-    default:
-      message.channel.send('svejate fora');
-      break;
-  }
+            break;
+
+          case "accuse":
+
+            dataservice.unmute(members, message)
+            dataservice.timerAccuse(message)
+
+            break;
+
+          case "rogo":
+
+            dataservice.timerRogo(message)
+
+            break;
+
+          default:
+
+          message.channel.send('svejate fora');
+
+          break;
+
+          }
 });
 
 

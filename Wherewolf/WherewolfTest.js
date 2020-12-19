@@ -38,13 +38,25 @@ client.on("message", function(message) {
           case "accuse":
 
             dataservice.unmute(members, message)
-            dataservice.timeraccuse(message)
+            dataservice.timerAccuse(message)
 
             break;
 
           case "rogo":
 
-            message.channel.send('demoghe fogooo');
+            dataservice.timerRogo(message)
+
+            break;
+
+          case "sa":
+
+            dataservice.skipAccuse(message)
+
+            break;
+
+          case "sr":
+
+            dataservice.skipRogo(message)
 
             break;
 
