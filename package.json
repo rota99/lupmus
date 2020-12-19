@@ -1,0 +1,22 @@
+{
+  "name": "wherewolf",
+  "version": "1.0.0",
+  "description": "Bot per la gestione di partite di wherewolf su discord",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rota99/lupmus.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rota99/lupmus/issues"
+  },
+  "homepage": "https://github.com/rota99/lupmus#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
