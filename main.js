@@ -29,7 +29,6 @@ client.on("message", message => {
   const channel = message.channel
   const members = channel.members
 
-  //const fasi = message.content.slice(prefix.length).split(' ').shift().toLowerCase();
   switch (command) {
 
     case "clear":
