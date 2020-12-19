@@ -48,6 +48,18 @@ client.on("message", function(message) {
 
             break;
 
+          case "sa":
+
+            dataservice.skipAccuse(message)
+
+            break;
+
+          case "sr":
+
+            dataservice.skipRogo(message)
+
+            break;
+
           default:
 
           message.channel.send('svejate fora');
