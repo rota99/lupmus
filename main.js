@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
+const dataservice = require("./function.js")
 const config = require("./config.json");
 const client = new Discord.Client();
-const dataservice = require("./function.js")
 const prefix = ".";
 
 const fs = require('fs');

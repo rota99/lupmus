@@ -1,8 +1,18 @@
 const Discord = require("discord.js");
+const dataservice = require("./function.js");
 const config = require("./config.json");
 const client = new Discord.Client();
-const dataservice = require("./function.js")
 const prefix = ".";
+
+// id Lupmus = 774369837727350844
+
+// id Narratore = 774699081620521000
+// id Morto = 780154332934438942
+
+// id votazioni = 788491738578288651
+// id risultati = 788492260722343957
+
+// id Discussione = 774710293363949618
 
 const fs = require('fs');
 client.commands = new Discord.Collection();
@@ -17,6 +27,7 @@ for(const file of commandFiles) {
 client.on('ready', () => {
   console.log(`Bro, io sottoscritto ${client.user.tag} sono pronto`);
 });
+
 
 
 client.on("message", message => {
@@ -52,6 +63,12 @@ client.on("message", message => {
     case "r":
 
       client.commands.get('r').execute(message, args);
+
+      break;
+
+    case "v":
+
+      client.commands.get('v').execute(members, message, args, client);
 
       break;
 
