@@ -32,6 +32,7 @@ const idBot2= '787753336169299998';
 const conta = (members) => {
   var i = -1;
   members.forEach(member => {
+    console.log(member.user.username)
     if (member._roles.includes(idNarratore) || member._roles.includes(idMorto) || member._roles.includes(idBot1) || member._roles.includes(idBot2) || member._roles.length == 0) {
       i++
     }
@@ -45,7 +46,7 @@ module.exports = {
 
   async execute(members, message, args, client) {
     var numero = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members.size
-    
+    var votanti = 0;
     const promiseConta = new Promise((resolve, reject) => {
       if(conta(members) >= 0) {
         resolve(conta(members))
@@ -55,7 +56,8 @@ module.exports = {
     });
 
     promiseConta.then((data) => {
-      console.log(data);
+      votanti = numero - data;
+            console.log(votanti);
     }).catch((error) => {
       console.log(error);
     });
