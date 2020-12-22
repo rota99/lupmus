@@ -57,7 +57,7 @@ module.exports = {
 
     promiseConta.then((data) => {
       votanti = numero - data;
-            console.log(votanti);
+      console.log(votanti);
     }).catch((error) => {
       console.log(error);
     });

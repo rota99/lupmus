@@ -57,7 +57,7 @@ client.on("message", message => {
 
     case "v":
 
-      client.commands.get('v').execute(members, message, args)
+      client.commands.get('v').execute(members, message, args, client)
 
       break;
 

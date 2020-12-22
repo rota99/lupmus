@@ -2,7 +2,7 @@ let intervallo = null;
 var c = null;
 
 const timer = (message) => {
-  if (isNaN(c)) return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
+  if (isNaN(c) && c != 's') return message.channel.send('Fratm non capisco il numero, quindi, o sono scemo, o te lo sei dimenticato'); // Checks if the `amount` parameter is a number. If not, the command throws an error
 
   message.channel.send(`Avanti il ${c}°`)
   c--;
@@ -31,8 +31,16 @@ module.exports = {
 
   execute(message, args) {
     clearInterval(intervallo);
-    c = parseInt(message.content.substr(message.content.indexOf(' ')+1, message.content.lenght));
-    message.channel.send(`Devono difendersi ancora ${c} persone, avete un minuto a testa`)
-    timer(message);
+    c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
+     if (c == 's') {
+       message.channel.send("È ora di scoprire se sono stati rogati dei dudi");
+       clearInterval(intervallo);
+       return;
+     }
+     else {
+        message.channel.send(`Devono difendersi ancora ${c} persone, avete un minuto a testa`)
+        timer(message);
+     }
+
   }
 }
