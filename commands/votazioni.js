@@ -10,7 +10,7 @@ var arrayVotanti = [];
 var rogo = [];
 var messageReaction = '';
 
-const pollBallottaggio = (idCanaleGenerale, client) => {
+const pollBallottaggio = (idCanaleVotazioni, client) => {
   var i = 0;
   var descriptionPoll = '';
   var voti = 0;
@@ -27,7 +27,7 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
     .setTitle('Chi vuoi mandare al ballottaggio?')
     .setDescription(descriptionPoll)
 
-  idCanaleGenerale.send(pollEmbed).then(messageReaction => {
+  idCanaleVotazioni.send(pollEmbed).then(messageReaction => {
     for(var j = 0; j < arrayVotanti.length; j++) {
       messageReaction.react(emoji[j]);
     }
@@ -44,6 +44,9 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
     collector.on('collect', (reaction, user) => {
       voti++;
       messageReaction.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+      message.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
+      message.channel.bulkDelete(messages);
+      });
       client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
 
       raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
@@ -81,6 +84,7 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
 
       messageReaction.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 
+
       while(rogo.length < 2) {
         findMax(raccoltaVoti)
       }
@@ -91,12 +95,12 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
         arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
 
-      pollRogo(idCanaleGenerale);
+      pollRogo(idCanaleVotazioni);
     });
   });
 }
 
-const pollRogo = (idCanaleGenerale) => {
+const pollRogo = (idCanaleVotazioni) => {
   console.log(arrayVotanti)
 }
 
@@ -135,7 +139,7 @@ module.exports = {
   async execute(members, message, args, client) {
     //var numero = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members.size
     var membersOnline = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members
-    var idCanaleGenerale = client.guilds.cache.get('774369837727350844').channels.cache.get('774369837727350846')
+    var idCanaleVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get('788491738578288651')
     var votanti = 0;
 
     const promiseConta = new Promise((resolve, reject) => {
@@ -152,7 +156,7 @@ module.exports = {
       message.channel.send(`Possono votare ${votanti} persone`);
 
       if(args[0] == 'b')
-        pollBallottaggio(idCanaleGenerale, client)
+        pollBallottaggio(idCanaleVotazioni, client)
     }).catch((error) => {
       console.log(error);
     });
