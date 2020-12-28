@@ -2,6 +2,7 @@ const idNarratore = "774699081620521000";
 const idMorto = '780154332934438942';
 const idBot1 = '788498166847766571';
 const idBot2= '787753336169299998';
+const idRisultati = '788492260722343957';
 const Discord = require("discord.js");
 const emoji = require("./emoji.json");
 
@@ -11,6 +12,9 @@ var messageReaction = ''
 const pollBallottaggio = (idCanaleGenerale, client) => {
   var i = 0;
   var descriptionPoll = '';
+  var voti = 0;
+  var raccoltaVoti = [];
+  var raccoltaReaction = [];
 
     arrayVotanti.forEach(votante => {
       descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
@@ -28,7 +32,7 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
     }
 
     const filter = (reaction, member) => {
-      return emoji.includes(reaction.emoji.name) && !(member.username == 'Wherewolf');
+      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(member.username);
     };
 
     // Create the collector
@@ -36,11 +40,51 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
       max: arrayVotanti.length
     });
 
+    collector.on('collect', (reaction, user) => {
+      voti++;
+      messageReaction.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+      client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
+
+      raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
+
+      var userId = messageReaction.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
+
+      const userReactions = messageReaction.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
+      try {
+      	for (const reaction of userReactions.values()) {
+      		reaction.users.remove(userId);
+      	}
+      } catch (error) {
+      	console.error('Failed to remove reactions.');
+      }
+    });
+
     collector.on('end', (collected) => {
-      if(collected.array()[0].users.cache.array()[0].id != '788495024240459806')
-        message.channel.send('*' + collected.array()[0].users.cache.array()[0].username + '* ha votato.')
+      var stringaVoti = '';
+
+      raccoltaReaction.forEach(voto => {
+        if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined)
+        {
+          raccoltaVoti.push({
+            votato: arrayVotanti[voto],
+            nVoti: raccoltaReaction.filter(x => x===voto).length
+          });
+        }
+      });
+
+      raccoltaVoti.forEach(v => {
+        stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
+      });
+
+      client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
+
+      messageReaction.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
     });
   });
+}
+
+const pollRogo = () => {
+
 }
 
 const conta = (membersOnline) => {
@@ -66,7 +110,6 @@ module.exports = {
     var membersOnline = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members
     var idCanaleGenerale = client.guilds.cache.get('774369837727350844').channels.cache.get('774369837727350846')
     var votanti = 0;
-    console.log(args)
 
     const promiseConta = new Promise((resolve, reject) => {
       let contaMembri = conta(membersOnline);
