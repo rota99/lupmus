@@ -6,8 +6,9 @@ const idRisultati = '788492260722343957';
 const Discord = require("discord.js");
 const emoji = require("./emoji.json");
 
-var arrayVotanti = []
-var messageReaction = ''
+var arrayVotanti = [];
+var rogo = [];
+var messageReaction = '';
 
 const pollBallottaggio = (idCanaleGenerale, client) => {
   var i = 0;
@@ -79,12 +80,24 @@ const pollBallottaggio = (idCanaleGenerale, client) => {
       client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
 
       messageReaction.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+
+      while(rogo.length < 2) {
+        findMax(raccoltaVoti)
+      }
+
+      client.channels.cache.get(idRisultati).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
+
+      rogo.forEach(r => {
+        arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
+      });
+
+      pollRogo(idCanaleGenerale);
     });
   });
 }
 
-const pollRogo = () => {
-
+const pollRogo = (idCanaleGenerale) => {
+  console.log(arrayVotanti)
 }
 
 const conta = (membersOnline) => {
@@ -99,6 +112,20 @@ const conta = (membersOnline) => {
     }
   });
   return i;
+}
+
+const findMax = (raccoltaVoti) => {
+  var max = -1;
+  for(var i = 0; i < raccoltaVoti.length; i++) {
+    if(raccoltaVoti[i].nVoti > max) {
+      max = raccoltaVoti[i].nVoti
+    }
+  }
+
+  raccoltaVoti.filter(persona => persona.nVoti === max).forEach(p => {
+    rogo.push(p.votato);
+    raccoltaVoti.splice(raccoltaVoti.indexOf(p), 1);
+  });
 }
 
 module.exports = {
