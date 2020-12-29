@@ -1,31 +1,29 @@
+const Discord = require("discord.js");
+const emoji = require("./emoji.json");
+
 const idNarratore = "774699081620521000";
 const idMorto = '780154332934438942';
 const idBot1 = '788498166847766571';
 const idBot2= '787753336169299998';
 const idRisultati = '788492260722343957';
 const idVotazioni = '788491738578288651';
-const Discord = require("discord.js");
-const emoji = require("./emoji.json");
 
 var arrayVotanti = [];
 var rogo = [];
-var messageReaction = '';
-var messageReactionRogo = '';
 
-const pollBallottaggio = (idCanaleVotazioni, idCanaleGenerale, client) => {
+const pollBallottaggio = (idCanaleVotazioni, client) => {
   var i = 0;
   var descriptionPoll = '';
   var voti = 0;
   var raccoltaVoti = [];
   var raccoltaReaction = [];
-  var cancella = 0;
 
   arrayVotanti.forEach(votante => {
     descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
     i++;
   })
 
-  const pollEmbed = new Discord.MessageEmbed()
+  const pollEmbedBallottaggio = new Discord.MessageEmbed()
     .setColor('#5c4545')
     .setTitle('Chi volete ballottare champs?')
     .setAuthor('Ballottaggio')
@@ -35,39 +33,45 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleGenerale, client) => {
 
 
 
-  idCanaleGenerale.send(pollEmbed).then(messageReaction => {
+  idCanaleVotazioni.send(pollEmbedBallottaggio).then(messageReactionBallottaggio => {
     for(var j = 0; j < arrayVotanti.length; j++) {
-      messageReaction.react(emoji[j]);
+      messageReactionBallottaggio.react(emoji[j]);
     }
 
-    const filter = (reaction, member) => {
-      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(member.username);
+    const filter = (reaction, user) => {
+      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(user.username);
     };
 
     // Create the collector
-    const collector = messageReaction.createReactionCollector(filter, {
+    const collector = messageReactionBallottaggio.createReactionCollector(filter, {
       max: arrayVotanti.length
     });
 
+
+    //ogni volta che viene aggiunta una reazione
     collector.on('collect', (reaction, user) => {
       voti++;
 
+      //comunico a tutti quanti hanno votato e quanti mancano
       if(voti == 1 && arrayVotanti.length - voti == 1)
-        messageReaction.channel.send(`**${voti}** persona ha votato. Manca **${arrayVotanti.length - voti}** persona.`)
+        messageReactionBallottaggio.channel.send(`**${voti}** persona ha votato. Manca **${arrayVotanti.length - voti}** persona.`);
       else if(voti != 1 && arrayVotanti.length - voti == 1)
-        messageReaction.channel.send(`**${voti}** persone hanno votato. Manca **${arrayVotanti.length - voti}** persona.`)
+        messageReactionBallottaggio.channel.send(`**${voti}** persone hanno votato. Manca **${arrayVotanti.length - voti}** persona.`);
       else if(voti == 1 && arrayVotanti.length - voti != 1)
-        messageReaction.channel.send(`**${voti}** persona ha votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+        messageReactionBallottaggio.channel.send(`**${voti}** persona ha votato. Mancano **${arrayVotanti.length - voti}** persone.`);
       else
-        messageReaction.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+        messageReactionBallottaggio.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`);
 
-      client.channels.cache.get(idVotazioni).send(`**${user.username}** ha votato.`);
+      //comunico al narratore chi ha votato
+      client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
 
+      //salvo la reaction che verrà poi cancellata
       raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
 
-      var userId = messageReaction.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
+      //elimino la reaction dell'utente per rendere i voti anonimi
+      var userId = messageReactionBallottaggio.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
 
-      const userReactions = messageReaction.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
+      const userReactions = messageReactionBallottaggio.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
       try {
       	for (const reaction of userReactions.values()) {
       		reaction.users.remove(userId);
@@ -76,18 +80,21 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleGenerale, client) => {
       	console.error('Failed to remove reactions.');
       }
 
-      if(cancella) {
-        messageReaction.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
-          messageReaction.channel.bulkDelete(messages);
+      //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
+      //mandare quello aggiornato
+      if(voti > 1) {
+        messageReactionBallottaggio.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
+          messageReactionBallottaggio.channel.bulkDelete(messages);
         });
       }
-
-      cancella = 1;
     });
 
-    collector.on('end', (collected) => {
+    //quando tutti hanno votato
+    collector.on('end', (collected, reason) => {
+      client.channels.cache.get(idRisultati).send(`*============================= RISULTATI =============================*`);
       var stringaVoti = '';
 
+      //il numero di volte che una reaction è stata selezionata indica quante volte un giocatore è stato votato
       raccoltaReaction.forEach(voto => {
         if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined) {
           raccoltaVoti.push({
@@ -104,31 +111,34 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleGenerale, client) => {
           stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
       });
 
-      client.channels.cache.get(idVotazioni).send(`${stringaVoti}`);
+      client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
 
-      messageReaction.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+      messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 
 
       while(rogo.length < 2) {
         findMax(raccoltaVoti)
       }
 
-      client.channels.cache.get(idVotazioni).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
+      client.channels.cache.get(idRisultati).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
+
+      client.channels.cache.get(idRisultati).send(`*===================================================================*`);
+
 
       rogo.forEach(r => {
         arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
 
-      setTimeout(() => { pollRogo(idCanaleVotazioni, idCanaleGenerale, client); }, 10000);
+      setTimeout(() => { pollRogo(idCanaleVotazioni, client); }, 10000);
 
-      client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        setTimeout(() => {  client.channels.cache.get(idVotazioni).bulkDelete(messages); }, 30000);
+      client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        setTimeout(() => {  client.channels.cache.get(idRisultati).bulkDelete(messages); }, 30000);
       });
     });
   });
 }
 
-const pollRogo = (idCanaleVotazioni, idCanaleGenerale, client) => {
+const pollRogo = (idCanaleVotazioni, client) => {
   var i = 0;
   var descriptionPoll = '';
   var voti = 0;
@@ -204,8 +214,6 @@ const pollRogo = (idCanaleVotazioni, idCanaleGenerale, client) => {
 
     collectorRogo.on('end', (collected) => {
       var stringaVoti = '';
-
-      console.log(raccoltaReaction)
 
       raccoltaReaction.forEach(voto => {
         if(raccoltaVoti.find(x => x.votato === arrayAccusati[voto]) == undefined) {
@@ -293,9 +301,10 @@ module.exports = {
 
     promiseConta.then((data) => {
       votanti = membersOnline.size - data;
-      message.channel.send(`Possono votare ${votanti} persone`);
-      pollBallottaggio(idCanaleVotazioni, idCanaleGenerale, client);
-      }).catch((error) => {
+      client.channels.cache.get(idVotazioni).send(`Possono votare ${votanti} persone`);
+
+      pollBallottaggio(idCanaleVotazioni, client);
+    }).catch((error) => {
       console.log(error);
     });
   }
