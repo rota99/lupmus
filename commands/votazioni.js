@@ -72,6 +72,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
       var userId = messageReactionBallottaggio.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
 
       const userReactions = messageReactionBallottaggio.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
+
       try {
       	for (const reaction of userReactions.values()) {
       		reaction.users.remove(userId);
