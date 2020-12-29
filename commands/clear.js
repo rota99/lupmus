@@ -14,7 +14,7 @@ module.exports = {
 
     if(command ==="c") {
       message.channel.messages.fetch({ limit: amount }).then(messages => { // Fetches the messages
-        setTimeout(() => {  message.channel.bulkDelete(messages); }, 2000);
+        setTimeout(() => {  message.channel.bulkDelete(messages); }, 1000);
       });
     }
   }

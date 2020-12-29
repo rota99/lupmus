@@ -26,8 +26,13 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
 
   const pollEmbed = new Discord.MessageEmbed()
     .setColor('#5c4545')
-    .setTitle('Chi vuoi mandare al ballottaggio?')
+    .setTitle('Chi volete ballottare champs?')
+    .setAuthor('Ballottaggio')
     .setDescription(descriptionPoll)
+	  .setImage('https://i.imgur.com/vFR9aYo.jpg')
+    .setFooter('Ricordatevi di votare solo una persona');
+
+
 
   idCanaleVotazioni.send(pollEmbed).then(messageReaction => {
     for(var j = 0; j < arrayVotanti.length; j++) {
@@ -111,8 +116,10 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
       rogo.forEach(r => {
         arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
-
       //pollRogo(idCanaleVotazioni, client);
+        messageReaction.channel.messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        setTimeout(() => {  messageReaction.channel.bulkDelete(messages); }, 30000);
+        });
     });
   });
 }
@@ -130,8 +137,11 @@ const pollRogo = (idCanaleVotazioni, client) => {
 
   const pollEmbedRogo = new Discord.MessageEmbed()
     .setColor('#5c4545')
-    .setTitle('Chi vuoi mandare al rogo?')
+    .setTitle('Chi volete rogare champs?')
+    .setAuthor('Rogo')
     .setDescription(descriptionPoll)
+    .setImage('https://i.imgur.com/H3ORkU4.jpg')
+    .setFooter('Ricordatevi che gli accusati non possono votare');
 
   idCanaleVotazioni.send(pollEmbedRogo).then(messageReactionRogo => {
     for(var j = 0; j < rogo.length; j++) {
@@ -273,9 +283,9 @@ module.exports = {
       votanti = membersOnline.size - data;
       message.channel.send(`Possono votare ${votanti} persone`);
 
-      if(args[0] == 'b')
-        pollBallottaggio(idCanaleVotazioni, client)
-    }).catch((error) => {
+
+      pollBallottaggio(idCanaleVotazioni, client)
+      }).catch((error) => {
       console.log(error);
     });
   }
