@@ -61,6 +61,12 @@ client.on("message", message => {
 
       break;
 
+    case "ruolo":
+
+      client.commands.get('ruolo').execute(members, message, args)
+
+      break;
+
     default:
 
       message.channel.send('svejate fora');

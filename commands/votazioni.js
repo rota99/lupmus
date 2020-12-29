@@ -3,6 +3,7 @@ const idMorto = '780154332934438942';
 const idBot1 = '788498166847766571';
 const idBot2= '787753336169299998';
 const idRisultati = '788492260722343957';
+const idVotazioni = '788491738578288651';
 const Discord = require("discord.js");
 const emoji = require("./emoji.json");
 
@@ -11,7 +12,7 @@ var rogo = [];
 var messageReaction = '';
 var messageReactionRogo = '';
 
-const pollBallottaggio = (idCanaleVotazioni, client) => {
+const pollBallottaggio = (idCanaleVotazioni, idCanaleGenerale, client) => {
   var i = 0;
   var descriptionPoll = '';
   var voti = 0;
@@ -34,7 +35,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
 
 
 
-  idCanaleVotazioni.send(pollEmbed).then(messageReaction => {
+  idCanaleGenerale.send(pollEmbed).then(messageReaction => {
     for(var j = 0; j < arrayVotanti.length; j++) {
       messageReaction.react(emoji[j]);
     }
@@ -60,7 +61,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
       else
         messageReaction.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
 
-      client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
+      client.channels.cache.get(idVotazioni).send(`**${user.username}** ha votato.`);
 
       raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
 
@@ -103,7 +104,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
           stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
       });
 
-      client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
+      client.channels.cache.get(idVotazioni).send(`${stringaVoti}`);
 
       messageReaction.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 
@@ -112,26 +113,34 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
         findMax(raccoltaVoti)
       }
 
-      client.channels.cache.get(idRisultati).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
+      client.channels.cache.get(idVotazioni).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
+
       rogo.forEach(r => {
         arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
-      //pollRogo(idCanaleVotazioni, client);
-        messageReaction.channel.messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        setTimeout(() => {  messageReaction.channel.bulkDelete(messages); }, 30000);
-        });
+
+      setTimeout(() => { pollRogo(idCanaleVotazioni, idCanaleGenerale, client); }, 10000);
+
+      client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        setTimeout(() => {  client.channels.cache.get(idVotazioni).bulkDelete(messages); }, 30000);
+      });
     });
   });
 }
 
-const pollRogo = (idCanaleVotazioni, client) => {
-  console.log(arrayVotanti)
-  var descriptionPoll = '';
+const pollRogo = (idCanaleVotazioni, idCanaleGenerale, client) => {
   var i = 0;
+  var descriptionPoll = '';
   var voti = 0;
+  var raccoltaVoti = [];
+  var raccoltaReaction = [];
+  var cancella = 0;
+  var arrayAccusati = rogo.slice(0, rogo.length);
 
-  rogo.forEach(rogato => {
-    descriptionPoll = descriptionPoll + emoji[i] + ' = ' + rogato + '\n';
+  rogo.splice(0, rogo.length)
+
+  arrayAccusati.forEach(accusato => {
+    descriptionPoll = descriptionPoll + emoji[i] + ' = ' + accusato + '\n';
     i++;
   });
 
@@ -143,8 +152,8 @@ const pollRogo = (idCanaleVotazioni, client) => {
     .setImage('https://i.imgur.com/H3ORkU4.jpg')
     .setFooter('Ricordatevi che gli accusati non possono votare');
 
-  idCanaleVotazioni.send(pollEmbedRogo).then(messageReactionRogo => {
-    for(var j = 0; j < rogo.length; j++) {
+  idCanaleGenerale.send(pollEmbedRogo).then(messageReactionRogo => {
+    for(var j = 0; j < arrayAccusati.length; j++) {
       messageReactionRogo.react(emoji[j]);
     }
 
@@ -169,7 +178,7 @@ const pollRogo = (idCanaleVotazioni, client) => {
       else
         messageReactionRogo.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
 
-      client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
+      client.channels.cache.get(idVotazioni).send(`**${user.username}** ha votato.`);
 
       raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
 
@@ -196,10 +205,12 @@ const pollRogo = (idCanaleVotazioni, client) => {
     collectorRogo.on('end', (collected) => {
       var stringaVoti = '';
 
+      console.log(raccoltaReaction)
+
       raccoltaReaction.forEach(voto => {
-        if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined) {
+        if(raccoltaVoti.find(x => x.votato === arrayAccusati[voto]) == undefined) {
           raccoltaVoti.push({
-            votato: arrayVotanti[voto],
+            votato: arrayAccusati[voto],
             nVoti: raccoltaReaction.filter(x => x===voto).length
           });
         }
@@ -212,19 +223,18 @@ const pollRogo = (idCanaleVotazioni, client) => {
           stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
       });
 
-      client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
+      client.channels.cache.get(idVotazioni).send(`${stringaVoti}`);
 
       messageReactionRogo.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 
-
-      while(rogo.length < 1) {
+      /*while(rogo.length < 1) {
         findMax(raccoltaVoti)
-      }
+      }*/
 
       if(rogo.length > 1)
-        client.channels.cache.get(idRisultati).send(`Il villaggio non ha trovato accordo.`);
+        client.channels.cache.get(idVotazioni).send(`Il villaggio non ha trovato accordo.`);
       else
-        client.channels.cache.get(idRisultati).send(`Al rogo ci va **${rogo[0]}**`);
+        client.channels.cache.get(idVotazioni).send(`Al rogo ci va **${rogo[0]}**`);
 
       arrayVotanti.splice(0, arrayVotanti.length);
       rogo.splice(0, rogo.length)
@@ -268,6 +278,8 @@ module.exports = {
     //var numero = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members.size
     var membersOnline = client.guilds.cache.get('774369837727350844').channels.cache.get('774710293363949618').members
     var idCanaleVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get('788491738578288651')
+    var idCanaleGenerale = client.guilds.cache.get('774369837727350844').channels.cache.get('774369837727350846')
+
     var votanti = 0;
 
     const promiseConta = new Promise((resolve, reject) => {
@@ -282,9 +294,7 @@ module.exports = {
     promiseConta.then((data) => {
       votanti = membersOnline.size - data;
       message.channel.send(`Possono votare ${votanti} persone`);
-
-
-      pollBallottaggio(idCanaleVotazioni, client)
+      pollBallottaggio(idCanaleVotazioni, idCanaleGenerale, client);
       }).catch((error) => {
       console.log(error);
     });

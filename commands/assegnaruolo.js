@@ -34,3 +34,21 @@ has been muted for ${message(message(mutetime))}`);
 
 module.exports.help = {   name: "tempmute" }
 */
+
+module.exports = {
+  name: "ruolo",
+  description: "Comando per darmi il ruolo narratore quando jacopo si dimentica.",
+
+  execute(members, message, args) {
+    var role = message.guild.roles.cache.find(role => role.name === "Bot");
+
+    member = message.guild.members.cache.find(member => member.user.username === "Wherewolf")
+    if (member.hasPermission('ADMINISTRATOR')) {
+      var rota = message.guild.members.cache.find(member => member.user.username === "rota")
+      rota.roles.remove(role)
+    	console.log("ce l'ha");
+    }
+    else
+      console.log("non ce l'ha")
+  }
+}
