@@ -10,6 +10,10 @@ const idVotazioni = '788491738578288651';
 
 var arrayVotanti = [];
 var rogo = [];
+<<<<<<< HEAD
+=======
+var messageReaction = '';
+>>>>>>> parent of cd08b36... Update votazioni.js
 
 const pollBallottaggio = (idCanaleVotazioni, client) => {
   var i = 0;
@@ -18,10 +22,10 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
   var raccoltaVoti = [];
   var raccoltaReaction = [];
 
-  arrayVotanti.forEach(votante => {
-    descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
-    i++;
-  })
+    arrayVotanti.forEach(votante => {
+      descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
+      i++;
+    })
 
   const pollEmbedBallottaggio = new Discord.MessageEmbed()
     .setColor('#5c4545')
@@ -51,6 +55,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
     //ogni volta che viene aggiunta una reazione
     collector.on('collect', (reaction, user) => {
       voti++;
+<<<<<<< HEAD
 
       //comunico a tutti quanti hanno votato e quanti mancano
       if(voti == 1 && arrayVotanti.length - voti == 1)
@@ -63,6 +68,12 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
         messageReactionBallottaggio.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`);
 
       //comunico al narratore chi ha votato
+=======
+      messageReaction.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+      message.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
+      message.channel.bulkDelete(messages);
+      });
+>>>>>>> parent of cd08b36... Update votazioni.js
       client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato.`);
 
       //salvo la reaction che verrà poi cancellata
@@ -79,6 +90,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
       } catch (error) {
       	console.error('Failed to remove reactions.');
       }
+<<<<<<< HEAD
 
       //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
       //mandare quello aggiornato
@@ -87,6 +99,8 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
           messageReactionBallottaggio.channel.bulkDelete(messages);
         });
       }
+=======
+>>>>>>> parent of cd08b36... Update votazioni.js
     });
 
     //quando tutti hanno votato
@@ -96,7 +110,8 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
 
       //il numero di volte che una reaction è stata selezionata indica quante volte un giocatore è stato votato
       raccoltaReaction.forEach(voto => {
-        if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined) {
+        if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined)
+        {
           raccoltaVoti.push({
             votato: arrayVotanti[voto],
             nVoti: raccoltaReaction.filter(x => x===voto).length
@@ -105,10 +120,7 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
       });
 
       raccoltaVoti.forEach(v => {
-        if(v.nVoti == 1)
-          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
-        else
-          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
+        stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
       });
 
       client.channels.cache.get(idRisultati).send(`${stringaVoti}`);
@@ -122,22 +134,30 @@ const pollBallottaggio = (idCanaleVotazioni, client) => {
 
       client.channels.cache.get(idRisultati).send(`Al rogo ci vanno **${rogo.join('**, **')}**`);
 
+<<<<<<< HEAD
       client.channels.cache.get(idRisultati).send(`*===================================================================*`);
 
 
+=======
+>>>>>>> parent of cd08b36... Update votazioni.js
       rogo.forEach(r => {
         arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
 
+<<<<<<< HEAD
       setTimeout(() => { pollRogo(idCanaleVotazioni, client); }, 10000);
 
       client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
         setTimeout(() => {  client.channels.cache.get(idRisultati).bulkDelete(messages); }, 30000);
       });
+=======
+      pollRogo(idCanaleVotazioni);
+>>>>>>> parent of cd08b36... Update votazioni.js
     });
   });
 }
 
+<<<<<<< HEAD
 const pollRogo = (idCanaleVotazioni, client) => {
   var i = 0;
   var descriptionPoll = '';
@@ -248,6 +268,10 @@ const pollRogo = (idCanaleVotazioni, client) => {
       rogo.splice(0, rogo.length)
     });
   });
+=======
+const pollRogo = (idCanaleVotazioni) => {
+  console.log(arrayVotanti)
+>>>>>>> parent of cd08b36... Update votazioni.js
 }
 
 const conta = (membersOnline) => {
