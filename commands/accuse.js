@@ -1,4 +1,5 @@
 const idNarratore = "774699081620521000";
+const idDiscussione = '774710293363949618';
 let intervallo = null;
 
 const unmute = (members) => {
@@ -51,10 +52,12 @@ module.exports = {
   name: 'a',
   description: 'Comando per avviare la fase del gioco giorno, in particolare le accuse.',
 
-  execute(members, message, args) {
+  execute(client, message, args) {
+    members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
     if(args[0] == 's') {
       skip();
-      message.channel.send('ok fra ma non agitarti per favorp');
+      unmute(members);
+      message.channel.send('ok fra ma non agitarti per favorp \nTempo di scegliere chi andrà al rogo');
     }
     else {
       message.channel.send('Buongiorno scimmiette, è ora di discutere');

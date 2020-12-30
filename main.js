@@ -31,21 +31,27 @@ client.on("message", message => {
 
   switch (command) {
 
+    case "a":
+
+      client.commands.get('a').execute(client, message, args);
+
+      break;
+
     case "c":
 
       client.commands.get('c').execute(message, args, command);
 
       break;
 
-    case "n":
+    case "f":
 
-      client.commands.get('n').execute(members, message, args);
+      client.commands.get('f').execute(client, message, args);
 
       break;
 
-    case "a":
+    case "n":
 
-      client.commands.get('a').execute(members, message, args);
+      client.commands.get('n').execute(client, message, args);
 
       break;
 
@@ -55,17 +61,17 @@ client.on("message", message => {
 
       break;
 
+    case "t":
+
+      client.commands.get('t').execute(message, args, client)
+
+      break;
+
     case "v":
 
-      client.commands.get('v').execute(members, message, args, client)
+        client.commands.get('v').execute(members, message, args, client)
 
-      break;
-
-    case "ruolo":
-
-      client.commands.get('ruolo').execute(members, message, args)
-
-      break;
+        break;
 
     default:
 

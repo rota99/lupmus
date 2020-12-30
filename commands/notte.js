@@ -1,4 +1,5 @@
 const idNarratore = "774699081620521000";
+const idDiscussione = '774710293363949618';
 
 const mute = (members) => {
   members.forEach(member => {
@@ -12,7 +13,8 @@ module.exports = {
   name: 'n',
   description: 'Comando per avviare la fase del gioco notte.',
 
-  execute(members, message, args) {
+  execute(client, message, args) {
+    members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
     message.channel.send('bnotte guys');
     mute(members)
   }

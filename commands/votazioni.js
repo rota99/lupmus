@@ -12,7 +12,7 @@ const idDiscussione = '774710293363949618';
 
 var arrayVotanti = [];
 var rogo = [];
-const ruoliCitta = [];
+const ruoliCitta = ["793951580663185438", "793951637638217728", "793951741468868628"];
 
 const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
   var i = 0;
@@ -28,9 +28,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
   })
 
   const pollEmbedBallottaggio = new Discord.MessageEmbed()
-    .setColor('#5c4545')
+    .setColor('#607eb0')
     .setTitle('Chi volete ballottare champs?')
-    .setAuthor('Possono votare ' + arrayVotanti.length + ' persone')
+    .setAuthor('Ballottaggio')
     .setDescription(descriptionPoll)
 	  .setImage('https://i.imgur.com/vFR9aYo.jpg')
     .setFooter('Ricordatevi di votare solo una persona');
@@ -67,24 +67,21 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         	console.error('Failed to remove reactions.');
         }
 
-        user.send("Hai già votato.");
+        user.send("Ti pare il caso di votare un'altra volta g?");
       }
       else {
         voti++;
         votantiEffettivi.push(user.username);
+        var stringaMancanti = '';
 
         //comunico a tutti quanti hanno votato e quanti mancano
-        if(voti == 1 && arrayVotanti.length - voti == 1)
-          messageReactionBallottaggio.channel.send(`**${voti}** persona ha votato. Manca **${arrayVotanti.length - voti}** persona.`);
-        else if(voti != 1 && arrayVotanti.length - voti == 1)
-          messageReactionBallottaggio.channel.send(`**${voti}** persone hanno votato. Manca **${arrayVotanti.length - voti}** persona.`);
-        else if(voti == 1 && arrayVotanti.length - voti != 1)
-          messageReactionBallottaggio.channel.send(`**${voti}** persona ha votato. Mancano **${arrayVotanti.length - voti}** persone.`);
+        if(arrayVotanti.length - voti == 1)
+          stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
         else
-          messageReactionBallottaggio.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`);
+          stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
 
         //comunico al narratore chi ha votato
-        client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**.`);
+        client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
 
         //salvo la reaction che verrà poi cancellata
         raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
@@ -104,13 +101,6 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
         //mandare quello aggiornato
-        if(voti > 1) {
-          messageReactionBallottaggio.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
-            messageReactionBallottaggio.channel.bulkDelete(messages);
-          });
-        }
-
-        collector.checkEnd();
       }
     });
 
@@ -145,10 +135,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
       }
 
       const pollEmbedRisultatiBallottaggio = new Discord.MessageEmbed()
-        .setColor('#5c4545')
+        .setColor('#607eb0')
         .setTitle('Risultati ballottaggio')
-        .setDescription(`${stringaVoti}`)
-        .setFooter(`Gli accusati sono ${rogo.join(', ')}`);
+        .setDescription(`${stringaVoti} \n\nGli accusati sono **${rogo.join('**, **')}**`)
 
       idCanaleRisultati.send(pollEmbedRisultatiBallottaggio);
 
@@ -164,28 +153,27 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
       const filterMessaggio = message => message.content.includes('È ora di scoprire se sono stati rogati dei dudi');
       const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
 
-      collectorMessaggio.on('collect', message => {  });
-
-      collectorMessaggio.on('end', collected => {
-        pollRogo(idCanaleVotazioni, idCanaleRisultati, client);
+      collectorMessaggio.on('collect', message => {
+        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        });
       });
 
-      //setTimeout(() => { pollRogo(idCanaleVotazioni, client); }, 10000);
-
-      client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        setTimeout(() => {  client.channels.cache.get(idRisultati).bulkDelete(messages); }, 30000);
+      collectorMessaggio.on('end', collected => {
+        pollRogo(idCanaleVotazioni, idCanaleRisultati, client, message);
       });
     });
   });
 }
 
-const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client) => {
+const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
   var i = 0;
   var descriptionPoll = '';
   var voti = 0;
   var raccoltaVoti = [];
   var raccoltaReaction = [];
   var arrayAccusati = rogo.slice(0, rogo.length);
+  var votantiEffettivi = [];
 
   rogo.splice(0, rogo.length)
 
@@ -195,9 +183,9 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client) => {
   });
 
   const pollEmbedRogo = new Discord.MessageEmbed()
-    .setColor('#5c4545')
+    .setColor('#f36324')
     .setTitle('Chi volete rogare champs?')
-    .setAuthor('Possono votare ' + arrayVotanti.length + ' persone')
+    .setAuthor('Rogo')
     .setDescription(descriptionPoll)
     .setImage('https://i.imgur.com/H3ORkU4.jpg')
     .setFooter('Ricordatevi che gli accusati non possono votare');
@@ -213,40 +201,58 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client) => {
 
     // Create the collector
     const collectorRogo = messageReactionRogo.createReactionCollector(filter, {
-      max: arrayVotanti.length
+      maxUsers: arrayVotanti.length
     });
 
     collectorRogo.on('collect', (reaction, user) => {
-      voti++;
+      if(votantiEffettivi.includes(user.username)) {
+        //elimino la reaction dell'utente perché ha già votato
+        var userId = messageReactionRogo.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
 
-      if(voti == 1 && arrayVotanti.length - voti == 1)
-        messageReactionRogo.channel.send(`**${voti}** persona ha votato. Manca **${arrayVotanti.length - voti}** persona.`)
-      else if(voti != 1 && arrayVotanti.length - voti == 1)
-        messageReactionRogo.channel.send(`**${voti}** persone hanno votato. Manca **${arrayVotanti.length - voti}** persona.`)
-      else if(voti == 1 && arrayVotanti.length - voti != 1)
-        messageReactionRogo.channel.send(`**${voti}** persona ha votato. Mancano **${arrayVotanti.length - voti}** persone.`)
-      else
-        messageReactionRogo.channel.send(`**${voti}** persone hanno votato. Mancano **${arrayVotanti.length - voti}** persone.`)
+        const userReactions = messageReactionRogo.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
 
-      client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayAccusati[emoji.indexOf(reaction._emoji.name)]}**.`);
+        try {
+        	for (const reaction of userReactions.values()) {
+        		reaction.users.remove(userId);
+        	}
+        } catch (error) {
+        	console.error('Failed to remove reactions.');
+        }
 
-      raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
-
-      var userId = messageReactionRogo.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
-
-      const userReactions = messageReactionRogo.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
-      try {
-      	for (const reaction of userReactions.values()) {
-      		reaction.users.remove(userId);
-      	}
-      } catch (error) {
-      	console.error('Failed to remove reactions.');
+        user.send("Ti pare il caso di votare un'altra volta g?");
       }
+      else {
+        voti++;
+        votantiEffettivi.push(user.username);
+        var stringaMancanti = '';
 
-      if(voti > 1) {
-        messageReactionRogo.channel.messages.fetch({ limit: 1 }).then(messages => { // Fetches the messages
-          messageReactionRogo.channel.bulkDelete(messages);
-        });
+        //comunico a tutti quanti hanno votato e quanti mancano
+        if(arrayVotanti.length - voti == 1)
+          stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
+        else
+          stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
+
+        //comunico al narratore chi ha votato
+        client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
+
+        //salvo la reaction che verrà poi cancellata
+        raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
+
+        //elimino la reaction dell'utente per rendere i voti anonimi
+        var userId = messageReactionRogo.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
+
+        const userReactions = messageReactionRogo.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
+
+        try {
+        	for (const reaction of userReactions.values()) {
+        		reaction.users.remove(userId);
+        	}
+        } catch (error) {
+        	console.error('Failed to remove reactions.');
+        }
+
+        //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
+        //mandare quello aggiornato
       }
     });
 
@@ -281,18 +287,32 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client) => {
       if(rogo.length > 1)
         stringaRisultato = `Il villaggio non ha trovato accordo.`;
       else
-        stringaRisultato = `Al rogo ci va ${rogo[0]}`;
+        stringaRisultato = `Al rogo ci va **${rogo[0]}**`;
 
       const pollEmbedRisultatiRogo = new Discord.MessageEmbed()
-        .setColor('#5c4545')
+        .setColor('#f36324')
         .setTitle('Risultati rogo')
-        .setDescription(`${stringaVoti}`)
-        .setFooter(`${stringaRisultato}`);
+        .setDescription(`${stringaVoti} \n\n${stringaRisultato}`)
 
       idCanaleRisultati.send(pollEmbedRisultatiRogo);
 
       arrayVotanti.splice(0, arrayVotanti.length);
       rogo.splice(0, rogo.length)
+
+      const filterMessaggio = message => message.content.includes('bnotte guys');
+      const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
+
+      collectorMessaggio.on('collect', message => {
+        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        });
+      });
+
+      collectorMessaggio.on('end', collected => {
+        client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        client.channels.cache.get(idRisultati).bulkDelete(messages);
+        });
+      });
     });
   });
 }
