@@ -32,8 +32,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
     .setTitle('Chi volete ballottare champs?')
     .setAuthor('Ballottaggio')
     .setDescription(descriptionPoll)
-	  .setImage('https://i.imgur.com/vFR9aYo.jpg')
-    .setFooter('Ricordatevi di votare solo una persona');
+	  .setImage('https://i.imgur.com/vFR9aYo.jpg');
 
 
 
@@ -138,6 +137,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         .setColor('#607eb0')
         .setTitle('Risultati ballottaggio')
         .setDescription(`${stringaVoti} \n\nGli accusati sono **${rogo.join('**, **')}**`)
+        .setThumbnail('https://i.imgur.com/vFR9aYo.jpg');
 
       idCanaleRisultati.send(pollEmbedRisultatiBallottaggio);
 
@@ -293,6 +293,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         .setColor('#f36324')
         .setTitle('Risultati rogo')
         .setDescription(`${stringaVoti} \n\n${stringaRisultato}`)
+        .setThumbnail('https://i.imgur.com/H3ORkU4.jpg');
 
       idCanaleRisultati.send(pollEmbedRisultatiRogo);
 

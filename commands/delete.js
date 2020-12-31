@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'c',
+  name: 'd',
   description: 'Comando per cancellare un certo numero di messaggi.',
 
   execute(message, args, command) {
@@ -12,7 +12,7 @@ module.exports = {
     if (amount < 1) return message.channel.send('Devo cancellarne almeno 1 però...'); // Checks if the `amount` integer is smaller than 1
 
 
-    if(command ==="c") {
+    if(command ==="d") {
       message.channel.messages.fetch({ limit: amount }).then(messages => { // Fetches the messages
         setTimeout(() => {  message.channel.bulkDelete(messages); }, 1000);
       });

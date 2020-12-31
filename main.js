@@ -39,13 +39,25 @@ client.on("message", message => {
 
     case "c":
 
-      client.commands.get('c').execute(message, args, command);
+      client.commands.get('c').execute(message, args, client)
+
+      break;
+
+    case "d":
+
+      client.commands.get('d').execute(message, args, command);
 
       break;
 
     case "f":
 
       client.commands.get('f').execute(client, message, args);
+
+      break;
+
+    case "g":
+
+      client.commands.get('g').execute(message, args, client)
 
       break;
 
