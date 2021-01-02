@@ -7,7 +7,7 @@ const idBot1 = '788498166847766571';
 const idBot2= '787753336169299998';
 const idRisultati = '788492260722343957';
 const idVotazioni = '788491738578288651';
-const idGenerale = '774369837727350846';
+const idComandi = '794913222968475659';
 const idDiscussione = '774710293363949618';
 
 var arrayVotanti = [];
@@ -65,8 +65,10 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         } catch (error) {
         	console.error('Failed to remove reactions.');
         }
-
         user.send("Ti pare il caso di votare un'altra volta g?");
+      }
+      else if (user.username == arrayVotanti[emoji.indexOf(reaction._emoji.name)]){
+        user.send("Il suicidio non è mai l'opzione giusta");
       }
       else {
         voti++;
@@ -150,7 +152,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
           arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
       });
 
-      const filterMessaggio = message => message.content.includes('È ora di scoprire se sono stati rogati dei dudi');
+      const filterMessaggio = message => message.content.includes('**È ora di decidere chi rogare**');
       const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
 
       collectorMessaggio.on('collect', message => {
@@ -218,7 +220,6 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         } catch (error) {
         	console.error('Failed to remove reactions.');
         }
-
         user.send("Ti pare il caso di votare un'altra volta g?");
       }
       else {
@@ -355,7 +356,7 @@ module.exports = {
     var membersOnline = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
     var idCanaleVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get(idVotazioni);
     var idCanaleRisultati = client.guilds.cache.get('774369837727350844').channels.cache.get(idRisultati);
-    var idCanaleGenerale = client.guilds.cache.get('774369837727350844').channels.cache.get(idGenerale);
+    var idCanaleComandi = client.guilds.cache.get('774369837727350844').channels.cache.get(idComandi);
 
     var votanti = 0;
 
