@@ -67,9 +67,6 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         }
         user.send("Ti pare il caso di votare un'altra volta g?");
       }
-      else if (user.username == arrayVotanti[emoji.indexOf(reaction._emoji.name)]){
-        user.send("Il suicidio non è mai l'opzione giusta");
-      }
       else {
         voti++;
         votantiEffettivi.push(user.username);
@@ -83,7 +80,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         //comunico al narratore chi ha votato
         client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
-
+        
         //salvo la reaction che verrà poi cancellata
         raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
 
