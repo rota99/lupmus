@@ -7,11 +7,12 @@ const idBot1 = '788498166847766571';
 const idBot2= '787753336169299998';
 const idRisultati = '788492260722343957';
 const idVotazioni = '788491738578288651';
-const idComandi = '794913222968475659';
+const idPartita = '794982586434060298';
 const idDiscussione = '774710293363949618';
 
 var arrayVotanti = [];
 var rogo = [];
+var copiaRogo = [];
 const ruoliCitta = ["793951580663185438", "793951637638217728", "793951741468868628"];
 
 const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
@@ -21,6 +22,11 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
   var raccoltaVoti = [];
   var raccoltaReaction = [];
   var votantiEffettivi = [];
+  var suicidio = 0;
+
+  client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+  client.channels.cache.get(idRisultati).bulkDelete(messages);
+  });
 
   arrayVotanti.forEach(votante => {
     descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
@@ -52,7 +58,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
     //ogni volta che viene aggiunta una reazione
     collector.on('collect', (reaction, user) => {
-      if(votantiEffettivi.includes(user.username)) {
+      if(votantiEffettivi.includes(user)) {
         //elimino la reaction dell'utente perché ha già votato
         var userId = messageReactionBallottaggio.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
 
@@ -65,11 +71,27 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         } catch (error) {
         	console.error('Failed to remove reactions.');
         }
-        user.send("Ti pare il caso di votare un'altra volta g?");
+        user.send("Ti pare il caso di votare un'altra volta G?");
+      }
+      else if (user.username == arrayVotanti[emoji.indexOf(reaction._emoji.name)]) {
+        suicidio = 1;
+        client.channels.cache.get(idRisultati).send(`> **!!ATTENZIONE ${user.username} HA VOTATO PER SE STESSO!!**`);
+        messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        });
+        user.send("G il suicidio non è mai l'opzione giusta, bel meme comunque");
+        votantiEffettivi.forEach(gente => {
+          gente.send("Mi dispiace ma uno dei G ha optato per il suicidio")
+        });
+        client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+          setTimeout(() => {client.channels.cache.get(idRisultati).bulkDelete(messages);}, 10000 );
+        });
+        setTimeout(() =>{pollBallottaggio(idCanaleVotazioni, idCanaleRisultati, client, message); }, 15000);
       }
       else {
         voti++;
-        votantiEffettivi.push(user.username);
+        votantiEffettivi.push(user);
         var stringaMancanti = '';
 
         //comunico a tutti quanti hanno votato e quanti mancano
@@ -80,7 +102,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         //comunico al narratore chi ha votato
         client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
-        
+
         //salvo la reaction che verrà poi cancellata
         raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
 
@@ -104,6 +126,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
     //quando tutti hanno votato
     collector.on('end', (collected, reason) => {
+      if(suicidio == 0) {
       var stringaVoti = '';
 
       //il numero di volte che una reaction è stata selezionata indica quante volte un giocatore è stato votato
@@ -159,8 +182,10 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
       });
 
       collectorMessaggio.on('end', collected => {
+        copiaRogo = rogo.slice(0, rogo.length);
         pollRogo(idCanaleVotazioni, idCanaleRisultati, client, message);
       });
+    }
     });
   });
 }
@@ -171,8 +196,9 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
   var voti = 0;
   var raccoltaVoti = [];
   var raccoltaReaction = [];
-  var arrayAccusati = rogo.slice(0, rogo.length);
+  var arrayAccusati = copiaRogo.slice(0, copiaRogo.length);
   var votantiEffettivi = [];
+  var suicidio = 0;
 
   rogo.splice(0, rogo.length)
 
@@ -204,7 +230,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
     });
 
     collectorRogo.on('collect', (reaction, user) => {
-      if(votantiEffettivi.includes(user.username)) {
+      if(votantiEffettivi.includes(user)) {
         //elimino la reaction dell'utente perché ha già votato
         var userId = messageReactionRogo.reactions.cache.get(reaction._emoji.name).users.cache.array()[1].id;
 
@@ -219,9 +245,22 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         }
         user.send("Ti pare il caso di votare un'altra volta g?");
       }
+      else if (user.username == arrayAccusati[emoji.indexOf(reaction._emoji.name)]) {
+        suicidio = 1;
+        client.channels.cache.get(idRisultati).send(`> **!!ATTENZIONE ${user.username} HA VOTATO PER SE STESSO!!**`);
+        messageReactionRogo.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        });
+        user.send("G il suicidio non è mai l'opzione giusta, bel meme comunque");
+        client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+          setTimeout(() => {client.channels.cache.get(idRisultati).bulkDelete(messages);}, 2000 );
+        });
+        setTimeout(() =>{pollRogo(idCanaleVotazioni, idCanaleRisultati, client, message); }, 3000);
+      }
       else {
         voti++;
-        votantiEffettivi.push(user.username);
+        votantiEffettivi.push(user);
         var stringaMancanti = '';
 
         //comunico a tutti quanti hanno votato e quanti mancano
@@ -231,7 +270,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
           stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
 
         //comunico al narratore chi ha votato
-        client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
+        client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayAccusati[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
 
         //salvo la reaction che verrà poi cancellata
         raccoltaReaction.push(emoji.indexOf(reaction._emoji.name));
@@ -255,6 +294,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
     });
 
     collectorRogo.on('end', (collected) => {
+      if(suicidio == 0) {
       var stringaVoti = '';
       var stringaRisultato = '';
 
@@ -312,6 +352,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         client.channels.cache.get(idRisultati).bulkDelete(messages);
         });
       });
+    }
     });
   });
 }
@@ -353,7 +394,7 @@ module.exports = {
     var membersOnline = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
     var idCanaleVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get(idVotazioni);
     var idCanaleRisultati = client.guilds.cache.get('774369837727350844').channels.cache.get(idRisultati);
-    var idCanaleComandi = client.guilds.cache.get('774369837727350844').channels.cache.get(idComandi);
+    var idCanalePartita = client.guilds.cache.get('774369837727350844').channels.cache.get(idPartita);
 
     var votanti = 0;
 

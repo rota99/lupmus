@@ -26,7 +26,7 @@ const timer = (message) => {
       clearInterval(intervallo);
     }
   };
-  intervallo = setInterval(minuti, 5000);
+  intervallo = setInterval(minuti, 60000);
 };
 
 module.exports = {
@@ -39,6 +39,9 @@ module.exports = {
      if (c == 's') {
        message.channel.send("**È ora di decidere chi rogare**");
        clearInterval(intervallo);
+       message.channel.messages.fetch({ limit: 3 }).then(messages => {
+       message.channel.bulkDelete(messages);
+       });
        return;
      }
      else {

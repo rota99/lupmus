@@ -55,7 +55,7 @@ const timer = (message) => {
     }
   };
 
-  intervallo = setInterval(minuti, 5000);
+  intervallo = setInterval(minuti, 60000);
 };
 
 const skip = () => {
