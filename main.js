@@ -73,6 +73,12 @@ client.on("message", message => {
 
       break;
 
+    case "s":
+
+      client.commands.get('s').execute(client, message, args);
+
+      break;
+
     case "t":
 
       client.commands.get('t').execute(message, args, client)
