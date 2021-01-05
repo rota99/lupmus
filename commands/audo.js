@@ -1,3 +1,4 @@
+/*
 const idDiscussione = '774710293363949618';
 
 module.exports = {
@@ -17,3 +18,4 @@ module.exports = {
     }
   }
 }
+*/

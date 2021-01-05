@@ -9,6 +9,10 @@ const idRisultati = '788492260722343957';
 const idVotazioni = '788491738578288651';
 const idPartita = '794982586434060298';
 const idDiscussione = '774710293363949618';
+const idAngelo = "786674550116319252";
+const idAmato = "796044059180793857";
+const idGiulietta = "786674683617083413";
+const idRomeo = "796044158049452133";
 
 var arrayVotanti = [];
 var rogo = [];
@@ -82,7 +86,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         });
         user.send("G il suicidio non è mai l'opzione giusta, bel meme comunque");
         votantiEffettivi.forEach(gente => {
-          gente.send("Mi dispiace ma uno dei G ha optato per il suicidio")
+          gente.send("Mi dispiace ma uno dei G ha optato per il suicidio, bisogna rivotare")
         });
         client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
           setTimeout(() => {client.channels.cache.get(idRisultati).bulkDelete(messages);}, 10000 );

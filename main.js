@@ -31,61 +31,67 @@ client.on("message", message => {
 
   switch (command) {
 
-    case "a":
+    case "a": //accuse
 
-      client.commands.get('a').execute(client, message, args);
+      client.commands.get('a').execute(client, message, args)
 
       break;
 
-    case "c":
+    case "ac": //angelo custode
+
+      client.commands.get('ac').execute(message, args, client)
+
+      break;
+
+    case "c": //criminali
 
       client.commands.get('c').execute(message, args, client)
 
       break;
 
-    case "d":
+    case "d": //delete
 
       client.commands.get('d').execute(message, args, command);
 
       break;
 
-    case "f":
+    case "f": //fine
 
       client.commands.get('f').execute(client, message, args);
 
       break;
 
-    case "g":
+    case "g": //guardie
 
       client.commands.get('g').execute(message, args, client)
 
       break;
 
-    case "n":
+    case "gr": //giulietta
+
+      client.commands.get('gr').execute(message, args, client)
+
+      break;
+
+    case "n": //notte
 
       client.commands.get('n').execute(client, message, args);
 
       break;
 
-    case "r":
+    case "r": //rogo
 
       client.commands.get('r').execute(message, args);
 
       break;
 
-    case "s":
-
-      client.commands.get('s').execute(client, message, args);
-
-      break;
-
-    case "t":
+    case "t": //traditore
 
       client.commands.get('t').execute(message, args, client)
 
       break;
 
-    case "v":
+    case "v": //votazioni
 
         client.commands.get('v').execute(members, message, args, client)
 
