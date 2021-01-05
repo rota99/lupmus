@@ -11,8 +11,6 @@ const idPartita = '794982586434060298';
 const idDiscussione = '774710293363949618';
 const idAngelo = "786674550116319252";
 const idAmato = "796044059180793857";
-const idGiulietta = "786674683617083413";
-const idRomeo = "796044158049452133";
 
 var arrayVotanti = [];
 var rogo = [];
@@ -20,8 +18,11 @@ var copiaRogo = [];
 const ruoliCitta = ["793951580663185438", "793951637638217728", "793951741468868628"];
 
 const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
+  arrayVotanti.sort();
   var i = 0;
   var descriptionPoll = '';
+  var field1 = '';
+  var field2 = '';
   var voti = 0;
   var raccoltaVoti = [];
   var raccoltaReaction = [];
@@ -33,9 +34,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
   });
 
   arrayVotanti.forEach(votante => {
-    descriptionPoll = descriptionPoll + emoji[i] + ' = ' + votante + '\n';
+    descriptionPoll = descriptionPoll + emoji[i] + '\u2800' + votante + '\n';
     i++;
-  })
+  });
 
   const pollEmbedBallottaggio = new Discord.MessageEmbed()
     .setColor('#607eb0')
@@ -43,8 +44,6 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
     .setAuthor('Ballottaggio')
     .setDescription(descriptionPoll)
 	  .setImage('https://i.imgur.com/vFR9aYo.jpg');
-
-
 
   idCanaleVotazioni.send(pollEmbedBallottaggio).then(messageReactionBallottaggio => {
     for(var j = 0; j < arrayVotanti.length; j++) {
@@ -131,65 +130,96 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
     //quando tutti hanno votato
     collector.on('end', (collected, reason) => {
       if(suicidio == 0) {
-      var stringaVoti = '';
+        var stringaVoti = '';
 
-      //il numero di volte che una reaction è stata selezionata indica quante volte un giocatore è stato votato
-      raccoltaReaction.forEach(voto => {
-        if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined) {
-          raccoltaVoti.push({
-            votato: arrayVotanti[voto],
-            nVoti: raccoltaReaction.filter(x => x===voto).length
-          });
-        }
-      });
-
-      raccoltaVoti.forEach(v => {
-        if(v.nVoti == 1)
-          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
-        else
-          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
-      });
-
-      messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
-
-
-      while(rogo.length < 2) {
-        findMax(raccoltaVoti)
-        if(raccoltaVoti.length == 0)
-          break;
-      }
-
-      const pollEmbedRisultatiBallottaggio = new Discord.MessageEmbed()
-        .setColor('#607eb0')
-        .setTitle('Risultati ballottaggio')
-        .setDescription(`${stringaVoti} \n\nGli accusati sono **${rogo.join('**, **')}**`)
-        .setThumbnail('https://i.imgur.com/vFR9aYo.jpg');
-
-      idCanaleRisultati.send(pollEmbedRisultatiBallottaggio);
-
-      //rimuovo dall'array dei vontanti le persone accusate, tranne quelle che hanno un ruolo città
-      rogo.forEach(r => {
-        var ruoliUser = client.guilds.cache.get('774369837727350844').members.cache.find(x => x.user.username == r)._roles;
-        const found = ruoliCitta.some(role => ruoliUser.includes(role))
-
-        if(!found)
-          arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
-      });
-
-      const filterMessaggio = message => message.content.includes('**È ora di decidere chi rogare**');
-      const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
-
-      collectorMessaggio.on('collect', message => {
-        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        //il numero di volte che una reaction è stata selezionata indica quante volte un giocatore è stato votato
+        raccoltaReaction.forEach(voto => {
+          if(raccoltaVoti.find(x => x.votato === arrayVotanti[voto]) == undefined) {
+            raccoltaVoti.push({
+              votato: arrayVotanti[voto],
+              nVoti: raccoltaReaction.filter(x => x===voto).length
+            });
+          }
         });
-      });
 
-      collectorMessaggio.on('end', collected => {
-        copiaRogo = rogo.slice(0, rogo.length);
-        pollRogo(idCanaleVotazioni, idCanaleRisultati, client, message);
-      });
-    }
+        raccoltaVoti.forEach(v => {
+          if(v.nVoti == 1)
+            stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
+          else
+            stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
+        });
+
+        messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+
+        raccoltaVoti.forEach(accusato => {
+          var amato = 0;
+          var angelo = null;
+          var membriVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get(idVotazioni).members;
+
+          if(membriVotazioni.find(m => m._roles.includes(idAngelo)) != undefined)
+            angelo = membriVotazioni.find(m => m._roles.includes(idAngelo)).user.username;
+
+          membriVotazioni.forEach(membro => {
+            if(accusato.votato == membro.user.username && membro._roles.includes(idAmato) && angelo != null) {
+              accusato.votato = angelo;
+              amato = 1;
+              return;
+            }
+          });
+
+          if(amato)
+            return;
+
+        });
+
+
+        while(rogo.length < 2) {
+          findMax(raccoltaVoti)
+          if(raccoltaVoti.length == 0)
+            break;
+        }
+
+        const promiseReduce = new Promise((resolve) => {
+          var unique = rogo.filter(function(elem, index, self) {
+              return index === self.indexOf(elem);
+          });
+
+          resolve(unique)
+        });
+
+        promiseReduce.then((data) => {
+          const pollEmbedRisultatiBallottaggio = new Discord.MessageEmbed()
+            .setColor('#607eb0')
+            .setTitle('Risultati ballottaggio')
+            .setDescription(`${stringaVoti} \n\nGli accusati sono **${data.join('**, **')}**`)
+            .setThumbnail('https://i.imgur.com/vFR9aYo.jpg');
+
+          idCanaleRisultati.send(pollEmbedRisultatiBallottaggio);
+
+          //rimuovo dall'array dei vontanti le persone accusate, tranne quelle che hanno un ruolo città
+          data.forEach(r => {
+            var ruoliUser = client.guilds.cache.get('774369837727350844').members.cache.find(x => x.user.username == r)._roles;
+            const found = ruoliCitta.some(role => ruoliUser.includes(role))
+
+            if(!found)
+              arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
+          });
+
+          const filterMessaggio = message => message.content.includes('**È ora di decidere chi rogare**');
+          const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
+
+          collectorMessaggio.on('collect', message => {
+            client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+            client.channels.cache.get(idVotazioni).bulkDelete(messages);
+            });
+          });
+
+          collectorMessaggio.on('end', collected => {
+            copiaRogo = data.slice(0, data.length);
+            pollRogo(idCanaleVotazioni, idCanaleRisultati, client, message);
+          });
+        });
+      }
     });
   });
 }
@@ -207,7 +237,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
   rogo.splice(0, rogo.length)
 
   arrayAccusati.forEach(accusato => {
-    descriptionPoll = descriptionPoll + emoji[i] + ' = ' + accusato + '\n';
+    descriptionPoll = descriptionPoll + emoji[i] + '\u2800' + accusato + '\n';
     i++;
   });
 
