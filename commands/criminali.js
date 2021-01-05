@@ -25,7 +25,6 @@ module.exports = {
     });
 
     promiseCriminali.then((data) => {
-      var criminale = message.guild.members.cache.find(member => member._roles.includes("786684300175212595" || "787045347167305768" || "787045379551526923" || "787045304687525888"))
 
       canaliCriminali.forEach((canale) => {
         var membriCanale = client.guilds.cache.get('774369837727350844').channels.cache.get(canale).members;

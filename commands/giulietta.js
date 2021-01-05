@@ -19,8 +19,7 @@ module.exports = {
     promiseGiulietta.then((data) => {
       var membriCanale = client.guilds.cache.get('774369837727350844').channels.cache.get(message.channel.id).members;
       var role = message.guild.roles.cache.find(role => role.name.toLowerCase() === "romeo");
-      var romeo = message.guild.members.cache.find(member => !member._roles.includes("787753336169299998" || "774699081620521000"))
-
+      var romeo = message.channel.members.find(member => (member._roles.indexOf("774699081620521000") == -1 && member._roles.indexOf("787753336169299998") == -1))
       romeo.roles.add(role)
       message.channel.send(`Giulietta **(${data})** ti ha scelt* come Romeo.`)
     });

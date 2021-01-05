@@ -25,7 +25,6 @@ module.exports = {
     });
 
     promiseGuardie.then((data) => {
-      var guardia = message.guild.members.cache.find(member => member._roles.includes("787045210617282631" || "787045249939800125" || "787045249939800125"))
 
       canaliGuardie.forEach((canale) => {
         var membriCanale = client.guilds.cache.get('774369837727350844').channels.cache.get(canale).members;
