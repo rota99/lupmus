@@ -73,6 +73,12 @@ client.on("message", message => {
 
       break;
 
+    case "m": //morto
+
+      client.commands.get('m').execute(members, message, args, client)
+
+      break;
+
     case "n": //notte
 
       client.commands.get('n').execute(client, message, args);
