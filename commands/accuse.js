@@ -11,7 +11,7 @@ const unmute = (members) => {
 };
 
 const timer = (message) => {
-  message.channel.messages.fetch({ limit: 2 }).then(messages => {
+  message.channel.messages.fetch({ limit: 10 }).then(messages => {
   message.channel.bulkDelete(messages);
   });
   var c = message.content.substr(message.content.indexOf(' ')+1, message.content.lenght);
@@ -70,7 +70,7 @@ module.exports = {
   execute(client, message, args) {
     members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
     if(args[0] == 's') {
-      message.channel.messages.fetch({ limit: 4 }).then(messages => {
+      message.channel.messages.fetch({ limit: 10 }).then(messages => {
       message.channel.bulkDelete(messages);
       });
       skip();
