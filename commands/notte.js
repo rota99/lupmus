@@ -32,7 +32,7 @@ module.exports = {
         message.channel.messages.fetch({ limit: 10 }).then(messages => {
             message.channel.bulkDelete(messages);
         });
-        client.channels.cache.get(idFazioneOmbra).send(`Il Traditore è **${data}**, ricordo che uccidendolo riconoscerà il branco ma quella notte non morirà nessuno.`)
+        client.channels.cache.get(idFazioneOmbra).send(`Il Traditore è **${data}**.\n Ricordo che uccidendolo riconoscerà il branco ma quella notte non morirà nessuno.`)
         members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
         message.channel.send('bnotte guys');
         mute(members)
