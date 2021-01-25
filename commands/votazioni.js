@@ -30,7 +30,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
   var suicidio = 0;
 
   client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-  client.channels.cache.get(idRisultati).bulkDelete(messages);
+    client.channels.cache.get(idRisultati).bulkDelete(messages);
   });
 
   arrayVotanti.forEach(votante => {
@@ -393,15 +393,18 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
 
 const conta = (membersOnline) => {
   var i = 0;
-  arrayVotanti.length = 0
+  arrayVotanti.splice(0, arrayVotanti.length);
   membersOnline.forEach(member => {
     if (member._roles.includes(idNarratore) || member._roles.includes(idMorto) || member._roles.includes(idBot1) || member._roles.includes(idBot2) || member._roles.length == 0) {
       i++
     }
     else {
-      arrayVotanti.push(member.user.username)
+      arrayVotanti.push(member.user.username.toLowerCase())
     }
   });
+
+  arrayVotanti.sort();
+
   return i;
 }
 
