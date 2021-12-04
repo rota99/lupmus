@@ -51,7 +51,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
     }
 
     const filter = (reaction, user) => {
-      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(user.username);
+      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(user.username.toLowerCase());
     };
 
     // Create the collector
@@ -76,7 +76,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         }
         user.send("Ti pare il caso di votare un'altra volta G?");
       }
-      else if (user.username == arrayVotanti[emoji.indexOf(reaction._emoji.name)]) {
+      else if (user.username.toLowerCase() == arrayVotanti[emoji.indexOf(reaction._emoji.name)]) {
         suicidio = 1;
         client.channels.cache.get(idRisultati).send(`> **!!ATTENZIONE ${user.username} HA VOTATO PER SE STESSO!!**`);
         messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
@@ -88,9 +88,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
           gente.send("Mi dispiace ma uno dei G ha optato per il suicidio, bisogna rivotare")
         });
         client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-          setTimeout(() => {client.channels.cache.get(idRisultati).bulkDelete(messages);}, 10000 );
+          setTimeout(() => { client.channels.cache.get(idRisultati).bulkDelete(messages);}, 10000 );
         });
-        setTimeout(() =>{pollBallottaggio(idCanaleVotazioni, idCanaleRisultati, client, message); }, 15000);
+        setTimeout(() =>{ pollBallottaggio(idCanaleVotazioni, idCanaleRisultati, client, message); }, 15000);
       }
       else {
         voti++;
@@ -198,7 +198,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
           //rimuovo dall'array dei vontanti le persone accusate, tranne quelle che hanno un ruolo città
           data.forEach(r => {
-            var ruoliUser = client.guilds.cache.get('774369837727350844').members.cache.find(x => x.user.username == r)._roles;
+            var ruoliUser = client.guilds.cache.get('774369837727350844').members.cache.find(x => x.user.username.toLowerCase() == r)._roles;
             const found = ruoliCitta.some(role => ruoliUser.includes(role))
 
             if(!found)
@@ -255,7 +255,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
     }
 
     const filter = (reaction, member) => {
-      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(member.username);
+      return emoji.includes(reaction.emoji.name) && arrayVotanti.includes(member.username.toLowerCase());
     };
 
     // Create the collector
@@ -396,10 +396,10 @@ const conta = (membersOnline) => {
   arrayVotanti.splice(0, arrayVotanti.length);
   membersOnline.forEach(member => {
     if (member._roles.includes(idNarratore) || member._roles.includes(idMorto) || member._roles.includes(idBot1) || member._roles.includes(idBot2) || member._roles.length == 0) {
-      i++
+      i++;
     }
     else {
-      arrayVotanti.push(member.user.username.toLowerCase())
+      arrayVotanti.push(member.user.username.toLowerCase());
     }
   });
 

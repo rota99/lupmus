@@ -91,6 +91,12 @@ client.on("message", message => {
 
       break;
 
+    case "ruolo": //ruolo
+
+      client.commands.get('ruolo').execute(client, message, args, members);
+
+      break;
+
     case "t": //traditore
 
       client.commands.get('t').execute(message, args, client)
