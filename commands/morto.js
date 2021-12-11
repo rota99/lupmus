@@ -11,9 +11,7 @@ module.exports = {
 
     const promiseRemoveRole = new Promise((resolve, reject) => {
       if(ruolo.length > 0) {
-        for(var i = 0; i < ruolo.length; i++) {
-          morto.roles.remove(ruolo[i]);
-        }
+        morto.roles.remove(morto._roles)
 
         resolve(morto);
       } else {
@@ -24,6 +22,11 @@ module.exports = {
     promiseRemoveRole.then((data) => {
       morto.roles.add(idMorto);
       message.channel.send(`Mi dispiace fra ma hai perso il drip`)
+        setTimeout(function() {
+          message.channel.messages.fetch({ limit: 2 }).then(messages => {
+          message.channel.bulkDelete(messages);
+          });
+        }, 5000);
     }).catch((error) => {
       console.log(error);
     });

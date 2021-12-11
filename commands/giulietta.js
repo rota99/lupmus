@@ -9,9 +9,9 @@ module.exports = {
       var giulietta = null;
       const ruoloGiulietta= "786674683617083413"
       members.forEach((member) => {
-          if(member._roles.includes(ruoloGiulietta)) {
-            giulietta = member.user.username;
-          }
+        if(member._roles.includes(ruoloGiulietta)) {
+          giulietta = member.user.username;
+        }
       });
       resolve(giulietta);
     });

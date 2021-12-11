@@ -39,11 +39,11 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
   });
 
   const pollEmbedBallottaggio = new Discord.MessageEmbed()
-    .setColor('#607eb0')
-    .setTitle('Chi volete ballottare champs?')
-    .setAuthor('Ballottaggio')
-    .setDescription(descriptionPoll)
-	  .setImage('https://i.imgur.com/vFR9aYo.jpg');
+  .setColor('#607eb0')
+  .setTitle('Chi volete ballottare champs?')
+  .setAuthor('Ballottaggio')
+  .setDescription(descriptionPoll)
+  .setImage('https://i.imgur.com/vFR9aYo.jpg');
 
   idCanaleVotazioni.send(pollEmbedBallottaggio).then(messageReactionBallottaggio => {
     for(var j = 0; j < arrayVotanti.length; j++) {
@@ -68,11 +68,11 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         const userReactions = messageReactionBallottaggio.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
 
         try {
-        	for (const reaction of userReactions.values()) {
-        		reaction.users.remove(userId);
-        	}
+          for (const reaction of userReactions.values()) {
+            reaction.users.remove(userId);
+          }
         } catch (error) {
-        	console.error('Failed to remove reactions.');
+          console.error('Failed to remove reactions.');
         }
         user.send("Ti pare il caso di votare un'altra volta G?");
       }
@@ -81,7 +81,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         client.channels.cache.get(idRisultati).send(`> **!!ATTENZIONE ${user.username} HA VOTATO PER SE STESSO!!**`);
         messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
         client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+          client.channels.cache.get(idVotazioni).bulkDelete(messages);
         });
         user.send("G il suicidio non è mai l'opzione giusta, bel meme comunque");
         votantiEffettivi.forEach(gente => {
@@ -99,9 +99,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         //comunico a tutti quanti hanno votato e quanti mancano
         if(arrayVotanti.length - voti == 1)
-          stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
+        stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
         else
-          stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
+        stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
 
         //comunico al narratore chi ha votato
         client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayVotanti[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
@@ -115,11 +115,11 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         const userReactions = messageReactionBallottaggio.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
 
         try {
-        	for (const reaction of userReactions.values()) {
-        		reaction.users.remove(userId);
-        	}
+          for (const reaction of userReactions.values()) {
+            reaction.users.remove(userId);
+          }
         } catch (error) {
-        	console.error('Failed to remove reactions.');
+          console.error('Failed to remove reactions.');
         }
 
         //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
@@ -144,9 +144,9 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         raccoltaVoti.forEach(v => {
           if(v.nVoti == 1)
-            stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
+          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
           else
-            stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
+          stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
         });
 
         messageReactionBallottaggio.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
@@ -157,7 +157,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
           var membriVotazioni = client.guilds.cache.get('774369837727350844').channels.cache.get(idVotazioni).members;
 
           if(membriVotazioni.find(m => m._roles.includes(idAngelo)) != undefined)
-            angelo = membriVotazioni.find(m => m._roles.includes(idAngelo)).user.username;
+          angelo = membriVotazioni.find(m => m._roles.includes(idAngelo)).user.username;
 
           membriVotazioni.forEach(membro => {
             if(accusato.votato == membro.user.username && membro._roles.includes(idAmato) && angelo != null) {
@@ -168,7 +168,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
           });
 
           if(amato)
-            return;
+          return;
 
         });
 
@@ -176,12 +176,12 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
         while(rogo.length < 2) {
           findMax(raccoltaVoti)
           if(raccoltaVoti.length == 0)
-            break;
+          break;
         }
 
         const promiseReduce = new Promise((resolve) => {
           var unique = rogo.filter(function(elem, index, self) {
-              return index === self.indexOf(elem);
+            return index === self.indexOf(elem);
           });
 
           resolve(unique)
@@ -189,10 +189,10 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
         promiseReduce.then((data) => {
           const pollEmbedRisultatiBallottaggio = new Discord.MessageEmbed()
-            .setColor('#607eb0')
-            .setTitle('Risultati ballottaggio')
-            .setDescription(`${stringaVoti} \n\nGli accusati sono **${data.join('**, **')}**`)
-            .setThumbnail('https://i.imgur.com/vFR9aYo.jpg');
+          .setColor('#607eb0')
+          .setTitle('Risultati ballottaggio')
+          .setDescription(`${stringaVoti} \n\nGli accusati sono **${data.join('**, **')}**`)
+          .setThumbnail('https://i.imgur.com/vFR9aYo.jpg');
 
           idCanaleRisultati.send(pollEmbedRisultatiBallottaggio);
 
@@ -202,7 +202,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
             const found = ruoliCitta.some(role => ruoliUser.includes(role))
 
             if(!found)
-              arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
+            arrayVotanti.splice(arrayVotanti.indexOf(r), 1);
           });
 
           const filterMessaggio = message => message.content.includes('**È ora di decidere chi rogare**');
@@ -210,7 +210,7 @@ const pollBallottaggio = (idCanaleVotazioni, idCanaleRisultati, client, message)
 
           collectorMessaggio.on('collect', message => {
             client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-            client.channels.cache.get(idVotazioni).bulkDelete(messages);
+              client.channels.cache.get(idVotazioni).bulkDelete(messages);
             });
           });
 
@@ -242,12 +242,12 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
   });
 
   const pollEmbedRogo = new Discord.MessageEmbed()
-    .setColor('#f36324')
-    .setTitle('Chi volete rogare champs?')
-    .setAuthor('Rogo')
-    .setDescription(descriptionPoll)
-    .setImage('https://i.imgur.com/H3ORkU4.jpg')
-    .setFooter('Ricordatevi che gli accusati non possono votare');
+  .setColor('#f36324')
+  .setTitle('Chi volete rogare champs?')
+  .setAuthor('Rogo')
+  .setDescription(descriptionPoll)
+  .setImage('https://i.imgur.com/H3ORkU4.jpg')
+  .setFooter('Ricordatevi che gli accusati non possono votare');
 
   idCanaleVotazioni.send(pollEmbedRogo).then(messageReactionRogo => {
     for(var j = 0; j < arrayAccusati.length; j++) {
@@ -271,11 +271,11 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         const userReactions = messageReactionRogo.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
 
         try {
-        	for (const reaction of userReactions.values()) {
-        		reaction.users.remove(userId);
-        	}
+          for (const reaction of userReactions.values()) {
+            reaction.users.remove(userId);
+          }
         } catch (error) {
-        	console.error('Failed to remove reactions.');
+          console.error('Failed to remove reactions.');
         }
         user.send("Ti pare il caso di votare un'altra volta g?");
       }
@@ -284,7 +284,7 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         client.channels.cache.get(idRisultati).send(`> **!!ATTENZIONE ${user.username} HA VOTATO PER SE STESSO!!**`);
         messageReactionRogo.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
         client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+          client.channels.cache.get(idVotazioni).bulkDelete(messages);
         });
         user.send("G il suicidio non è mai l'opzione giusta, bel meme comunque");
         client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
@@ -299,9 +299,9 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
 
         //comunico a tutti quanti hanno votato e quanti mancano
         if(arrayVotanti.length - voti == 1)
-          stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
+        stringaMancanti = `Manca **${arrayVotanti.length - voti}** persona.`;
         else
-          stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
+        stringaMancanti = `Mancano **${arrayVotanti.length - voti}** persone.`;
 
         //comunico al narratore chi ha votato
         client.channels.cache.get(idRisultati).send(`**${user.username}** ha votato per **${arrayAccusati[emoji.indexOf(reaction._emoji.name)]}**. ${stringaMancanti}`);
@@ -315,11 +315,11 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
         const userReactions = messageReactionRogo.reactions.cache.filter(reaction => reaction.users.cache.has(userId));
 
         try {
-        	for (const reaction of userReactions.values()) {
-        		reaction.users.remove(userId);
-        	}
+          for (const reaction of userReactions.values()) {
+            reaction.users.remove(userId);
+          }
         } catch (error) {
-        	console.error('Failed to remove reactions.');
+          console.error('Failed to remove reactions.');
         }
 
         //se si è al secondo/terzo/... voto allora va cancellato il messaggio che comunica quanti hanno votato e quanti rimangono per
@@ -329,64 +329,64 @@ const pollRogo = (idCanaleVotazioni, idCanaleRisultati, client, message) => {
 
     collectorRogo.on('end', (collected) => {
       if(suicidio == 0) {
-      var stringaVoti = '';
-      var stringaRisultato = '';
+        var stringaVoti = '';
+        var stringaRisultato = '';
 
-      raccoltaReaction.forEach(voto => {
-        if(raccoltaVoti.find(x => x.votato === arrayAccusati[voto]) == undefined) {
-          raccoltaVoti.push({
-            votato: arrayAccusati[voto],
-            nVoti: raccoltaReaction.filter(x => x===voto).length
-          });
-        }
-      });
+        raccoltaReaction.forEach(voto => {
+          if(raccoltaVoti.find(x => x.votato === arrayAccusati[voto]) == undefined) {
+            raccoltaVoti.push({
+              votato: arrayAccusati[voto],
+              nVoti: raccoltaReaction.filter(x => x===voto).length
+            });
+          }
+        });
 
-      raccoltaVoti.forEach(v => {
-        if(v.nVoti == 1)
+        raccoltaVoti.forEach(v => {
+          if(v.nVoti == 1)
           stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voto.\n';
-        else
+          else
           stringaVoti = stringaVoti + '**' + v.votato + '** ha ricevuto **' + v.nVoti + '** voti.\n';
-      });
+        });
 
-      messageReactionRogo.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+        messageReactionRogo.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 
-      while(rogo.length < 1) {
-        findMax(raccoltaVoti)
-        if(raccoltaVoti.length == 0)
+        while(rogo.length < 1) {
+          findMax(raccoltaVoti)
+          if(raccoltaVoti.length == 0)
           break;
-      }
+        }
 
-      if(rogo.length > 1)
+        if(rogo.length > 1)
         stringaRisultato = `Il villaggio non ha trovato accordo.`;
-      else
+        else
         stringaRisultato = `Al rogo ci va **${rogo[0]}**`;
 
-      const pollEmbedRisultatiRogo = new Discord.MessageEmbed()
+        const pollEmbedRisultatiRogo = new Discord.MessageEmbed()
         .setColor('#f36324')
         .setTitle('Risultati rogo')
         .setDescription(`${stringaVoti} \n\n${stringaRisultato}`)
         .setThumbnail('https://i.imgur.com/H3ORkU4.jpg');
 
-      idCanaleRisultati.send(pollEmbedRisultatiRogo);
+        idCanaleRisultati.send(pollEmbedRisultatiRogo);
 
-      arrayVotanti.splice(0, arrayVotanti.length);
-      rogo.splice(0, rogo.length)
+        arrayVotanti.splice(0, arrayVotanti.length);
+        rogo.splice(0, rogo.length)
 
-      const filterMessaggio = message => message.content.includes('bnotte guys');
-      const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
+        const filterMessaggio = message => message.content.includes('bnotte guys');
+        const collectorMessaggio = message.channel.createMessageCollector(filterMessaggio, { max: 1 });
 
-      collectorMessaggio.on('collect', message => {
-        client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        client.channels.cache.get(idVotazioni).bulkDelete(messages);
+        collectorMessaggio.on('collect', message => {
+          client.channels.cache.get(idVotazioni).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+            client.channels.cache.get(idVotazioni).bulkDelete(messages);
+          });
         });
-      });
 
-      collectorMessaggio.on('end', collected => {
-        client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
-        client.channels.cache.get(idRisultati).bulkDelete(messages);
+        collectorMessaggio.on('end', collected => {
+          client.channels.cache.get(idRisultati).messages.fetch({ limit: 50 }).then(messages => { // Fetches the messages
+            client.channels.cache.get(idRisultati).bulkDelete(messages);
+          });
         });
-      });
-    }
+      }
     });
   });
 }

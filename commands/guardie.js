@@ -41,9 +41,9 @@ module.exports = {
           else {
             if(membro.user.username != null) {
               if(numeroGuardie == 1)
-                client.channels.cache.get(canale).send(`La guardia in gioco è: \n**${data}**`);
+              client.channels.cache.get(canale).send(`La guardia in gioco è: \n**${data}**`);
               else
-                client.channels.cache.get(canale).send(`Le guardie in gioco sono: \n**${data.join('**, **')}**`)
+              client.channels.cache.get(canale).send(`Le guardie in gioco sono: \n**${data.join('**, **')}**`)
             }
           }
         });

@@ -29,7 +29,17 @@ module.exports = {
   description: 'Comando per finire la partita',
 
   execute(client, message, args) {
-    members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
+    var members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
+    var giocatori = message.channel.members.filter(member => (member._roles.indexOf("774699081620521000") == -1 && member._roles.indexOf("787753336169299998") == -1))
+    var ruoli = giocatori._roles;
+
+      giocatori.forEach((giocatore) => {
+        if(giocatore._roles.length > 0) {
+          giocatore.roles.remove(giocatore._roles)
+        }
+      });
+
+
       unmute(members);
       cancella(client);
       message.channel.send('***La partita è basta \ncomplimenti a tutti***');

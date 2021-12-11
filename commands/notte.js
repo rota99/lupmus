@@ -21,16 +21,16 @@ module.exports = {
       var traditore = [];
       const idTraditore = "774684173787987978"
       members.forEach((member) => {
-          if(member._roles.includes(idTraditore)) {
-            traditore.push(member.user.username)
-          }
+        if(member._roles.includes(idTraditore)) {
+          traditore.push(member.user.username)
+        }
       });
       resolve(traditore);
     });
     promiseTraditore.then((data) => {
       if(turni == 0) {
         message.channel.messages.fetch({ limit: 10 }).then(messages => {
-            message.channel.bulkDelete(messages);
+          message.channel.bulkDelete(messages);
         });
         client.channels.cache.get(idFazioneOmbra).send(`Il Traditore è **${data}**.\n Ricordo che uccidendolo riconoscerà il branco ma quella notte non morirà nessuno.`)
         members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
@@ -39,7 +39,7 @@ module.exports = {
       }
       else {
         message.channel.messages.fetch({ limit: 10 }).then(messages => {
-            message.channel.bulkDelete(messages);
+          message.channel.bulkDelete(messages);
         });
         members = client.guilds.cache.get('774369837727350844').channels.cache.get(idDiscussione).members;
         message.channel.send('bnotte guys');
