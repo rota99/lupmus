@@ -1,20 +1,22 @@
-const idDiscussione = '774710293363949618';
-
-const idNarratore = "774699081620521000";
-const idBot1 = '788498166847766571';
-const idBot2= '787753336169299998';
-
 module.exports = {
-  name: 'ruolo',
-  description: 'Comando per dare un ruolo alla persona menzionata nel canale.',
+  name: "ruolo",
+  description: "Comando per dare il ruolo alla persona dal canale usando la menzione",
 
-  execute(client, message, args, members) {
-    const giocatore = message.mention.user.first()
-    if(!giocatore) {
-      message.channel.send("Senti scemo ho poco tempo, dimmi a chi devo dare questo ruolo, altrimenti...")
-      return;
-    }
-    args.shift()
+ execute(members, message, args, client) {
+    const idDiscussione = '774710293363949618';
+    var nomeCanale = "774698691105783819";
+    var user = message.mentions.members.first() || message.guild.members.find(m => m.user.tag === args[0]) || message.guild.members.get(args[0])
+    var ruolo = user._roles;
+
+      user.roles.add(nomeCanale);
+      let role = message.guild.roles.cache.find(r => r.id === nomeCanale);
+
+      setTimeout(function()
+        {
+          message.channel.send(`**${user.displayName}** ora sei **${role.name}**, vedi di farti valere.`)
+
+        }, 500);
+
 
   }
 }
