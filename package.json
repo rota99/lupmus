@@ -1,5 +1,5 @@
 {
-  "name": "wherewolf",
+  "name": "discord.js",
   "version": "1.0.0",
   "description": "Bot per la gestione di partite di wherewolf su discord",
   "main": "main.js",
@@ -19,5 +19,6 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "emoji.json": "^13.1.0"
-  }
+  },
+  "devDependencies": {}
 }
