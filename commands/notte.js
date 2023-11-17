@@ -1,6 +1,7 @@
 const idNarratore = "774699081620521000";
 const idDiscussione = '774710293363949618';
 const idFazioneOmbra = '774709180073771059';
+const { SlashCommandBuilder } = require('discord.js');
 var turni = 0;
 
 const mute = (members) => {
